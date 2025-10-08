@@ -2,7 +2,7 @@
 
 namespace PeliculasAPI.Servicios
 {
-    public class ServicioUsuarios
+    public class ServicioUsuarios : IServicioUsuarios
     {
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly UserManager<IdentityUser> userManager;
@@ -17,6 +17,7 @@ namespace PeliculasAPI.Servicios
         {
             var email = httpContextAccessor.HttpContext!.User.Claims.FirstOrDefault(x => x.Type == "email")!.Value;
             var usuario = await userManager.FindByEmailAsync(email);
+            return usuario!.Id;
         }
     }
 }
