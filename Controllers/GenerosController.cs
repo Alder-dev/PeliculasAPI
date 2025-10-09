@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ namespace PeliculasAPI.Controllers
 {
     [Route("api/generos")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "esadmin")]
     public class GenerosController: CustomBaseController
     {
         private readonly IOutputCacheStore outputCacheStore;
@@ -31,7 +33,8 @@ namespace PeliculasAPI.Controllers
         }
 
         [HttpGet] // api/generos
-        [OutputCache(Tags = [cacheKey])]
+        [OutputCache(Tags = [cacheKey], PolicyName = nameof(PoliticaCacheSinAutenticacion))]
+        [AllowAnonymous]
         public async Task<List<GeneroDTO>> Get([FromQuery] PaginacionDTO paginacion)
         {
             return await Get<Genero, GeneroDTO>(paginacion, ordenarpor: g => g.Nombre);

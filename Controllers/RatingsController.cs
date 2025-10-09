@@ -10,6 +10,7 @@ namespace PeliculasAPI.Controllers
 {
     [ApiController]
     [Route("api/rating")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class RatingsController: ControllerBase
     {
         private readonly ApplicationDbContext context;
@@ -22,7 +23,6 @@ namespace PeliculasAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Post([FromBody] RatingCreacionDTO ratingCreacionDTO)
         {
             var usuarioId = await servicioUsuarios.ObtenerUsuarioId();

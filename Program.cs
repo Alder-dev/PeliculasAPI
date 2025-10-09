@@ -46,6 +46,11 @@ builder.Services.AddAuthentication().AddJwtBearer(opciones =>
     };
 });
 
+builder.Services.AddAuthorization(opciones =>
+{
+    opciones.AddPolicy("esadmin", politica => politica.RequireClaim("esadmin"));
+});
+
 builder.Services.AddDbContext<ApplicationDbContext>(opciones =>
     opciones.UseSqlServer("name=DefaultConnection", sqlServer =>
     sqlServer.UseNetTopologySuite()));
@@ -55,6 +60,7 @@ builder.Services.AddSingleton<GeometryFactory>(NtsGeometryServices.Instance.Crea
 builder.Services.AddOutputCache(opciones =>
 {
     opciones.DefaultExpirationTimeSpan = TimeSpan.FromSeconds(60);
+    opciones.AddPolicy(nameof(PoliticaCacheSinAutenticacion), PoliticaCacheSinAutenticacion.Instance);
 
 });
 
@@ -73,6 +79,11 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<IServicioUsuarios, ServicioUsuarios>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db 
+}
 
 // Configure the HTTP request pipeline.
 
